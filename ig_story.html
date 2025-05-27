@@ -3,93 +3,185 @@
 <head>
   <meta charset="UTF-8">
   <title>My Jungle Roots IG Story</title>
+  <link id="dynamicFont" rel="stylesheet">
   <style>
     html, body {
-      margin: 0; padding: 0;
-      width: 1080px; height: 1920px;
-      display: flex; justify-content: center; align-items: center;
+      margin: 0;
+      padding: 0;
+      width: 1080px;
+      height: 1920px;
       background: radial-gradient(circle at center, #1B3C1F 40%, #102316 100%);
-      font-family: Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
       overflow: hidden;
-    }
-    .frame {
       position: relative;
+    }
+    .main-container {
+      width: 100%;
+      height: 100vh;
+      min-height: 1920px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding-top: 120px;   /* higher top padding for story */
+      position: relative;
+      transition: padding-top 0.18s;
+    }
+    .photo-portrait-frame {
       width: 900px;
-      /* total frame height accommodates photo + captions + logo */
-      height: 1600px;
-      background: #1B3C1F;
+      /* height set dynamically by JS */
+      background: #222;
       border-radius: 32px;
       overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      flex-shrink: 0;
     }
-    .frame img.photo {
+    .photo {
       width: 100%;
-      /* default, overridden by JS if photoHeight param is set */
-      height: 1300px;
+      height: 100%;
       object-fit: cover;
       object-position: center;
       display: block;
     }
-    .frame .caption {
-      margin: 16px;
-      font-size: 64px;
-      line-height: 1.1;
-      text-align: center;
-      color: #FFD700;
+    .caption-block {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 24px;
+      margin-bottom: 24px;
     }
-    .frame .subcaption {
-      margin: 8px;
+    .caption {
+      font-size: 72px;             /* default, overridden by JS */
+      font-family: 'Dancing Script', cursive; /* by JS */
+      text-align: center;
+      margin: 0;
+      line-height: 1.15;
+      max-width: 980px;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
+      transition: font-size 0.2s, font-family 0.2s;
+    }
+    .gold-divider {
+      display: none;
+      width: 120px;
+      height: 4px;
+      border-radius: 3px;
+      margin: 18px auto 6px;
+      box-shadow: 0 1px 6px rgba(190,153,60,0.18);
+      background: linear-gradient(90deg, #FFD700 0%, #FFFBEA 100%);
+      transition: background 0.18s;
+    }
+    .subcaption {
       font-size: 32px;
       text-align: center;
+      margin-top: 0;
       font-style: italic;
-      color: rgba(255,255,255,0.9);
     }
-    .frame img.logo {
+    .logo {
       position: absolute;
-      bottom: 32px;
-      right: 32px;
-      width: 150px;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+      right: 44px;
+      bottom: 44px;    /* can be overridden with ?logoBottom */
+      width: 200px;    /* default size, overridden with ?logoSize */
+      opacity: 0.96;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.45));
+      z-index: 99;
+      transition: width 0.15s, bottom 0.15s;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
-
-  <div class="frame">
-    <img id="photo" class="photo" src="" alt="Plant photo">
-    <div id="caption" class="caption">[caption]</div>
-    <div id="subcaption" class="subcaption">[subcaption]</div>
-    <img id="logo" class="logo"
-         src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png"
-         alt="My Jungle Roots Logo">
+  <div class="main-container" id="mainContainer">
+    <div class="photo-portrait-frame" id="photoFrame">
+      <img id="plantImage" class="photo" alt="Plant">
+    </div>
+    <div class="caption-block">
+      <div class="caption" id="captionText"></div>
+      <div class="gold-divider" id="goldDivider"></div>
+      <div class="subcaption" id="subcaptionText" style="display:none;"></div>
+    </div>
   </div>
 
-  <script>
-    const qs = new URLSearchParams(window.location.search);
+  <img id="logoImg"
+       class="logo"
+       src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png"
+       alt="My Jungle Roots Logo">
 
-    // Photo URL + optional height
-    const photoUrl    = qs.get('photoUrl')    || '';
-    const photoHeight = parseInt(qs.get('photoHeight'), 10) || 1300;
+  <script>
+    const p = new URLSearchParams(window.location.search);
+
+    // URL params (with story-safe defaults)
+    const bgColor        = p.get('bgColor')       || '#1B3C1F';
+    const caption        = p.get('caption')       || '';
+    const subcaption     = p.get('subcaption')    || '';
+    const photoUrl       = p.get('photoUrl')      || '';
+    const logoSize       = +p.get('logoSize')     || 200;
+    const logoBottom     = +p.get('logoBottom')   || 44;
+    const captionColor   = p.get('captionColor')  || '#FFFFFF';
+    const subcaptionColor= p.get('subcaptionColor') || 'rgba(255,255,255,0.9)';
+    const dividerColor   = p.get('dividerColor')  || '#FFD700';
+    const topPadding     = +p.get('topPadding')   || 120;
+    const captionFontSize= +p.get('captionFontSize') || 72;
+    const captionFont    = p.get('captionFont')   || 'Dancing+Script';
+
+    // Load dynamic font
+    document.getElementById('dynamicFont').href =
+      `https://fonts.googleapis.com/css2?family=${captionFont}:wght@700&display=swap`;
+
+    // Apply BG & top padding
+    document.body.style.background = 
+      `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
+    document.getElementById('mainContainer')
+            .style.paddingTop = `${topPadding}px`;
+
+    // Photo
     if (photoUrl) {
-      const img = document.getElementById('photo');
-      img.src = photoUrl;
-      img.style.height = photoHeight + 'px';
+      document.getElementById('plantImage').src = photoUrl;
     }
 
     // Caption
-    const caption = qs.get('caption') || '';
-    if (caption) {
-      const cap = document.getElementById('caption');
-      cap.textContent = caption;
+    const cE = document.getElementById('captionText');
+    cE.textContent = caption;
+    cE.style.color = captionColor;
+    cE.style.fontSize = `${captionFontSize}px`;
+    cE.style.fontFamily = `'${captionFont.replace(/\+/g,' ')}', cursive`;
+
+    // Subcaption & divider
+    const sE = document.getElementById('subcaptionText');
+    const dE = document.getElementById('goldDivider');
+    if (subcaption) {
+      sE.style.display = 'block';
+      sE.textContent = subcaption;
+      sE.style.color = subcaptionColor;
+      dE.style.display = 'block';
+      dE.style.background = `linear-gradient(90deg, ${dividerColor} 0%, #FFFBEA 100%)`;
     }
 
-    // Subcaption
-    const sub = qs.get('subcaption') || '';
-    if (sub) {
-      const sc = document.getElementById('subcaption');
-      sc.textContent = sub;
+    // Logo
+    const logo = document.getElementById('logoImg');
+    logo.style.width = `${logoSize}px`;
+    logo.style.bottom = `${logoBottom}px`;
+
+    // Resize photo to fill remaining space (4:5 max)
+    function resizeStory() {
+      const total = 1920;
+      const topPad = topPadding;
+      const captionH = document.querySelector('.caption-block').offsetHeight;
+      const logoH = logo.offsetHeight || logoSize;
+      let newH = total - topPad - captionH - logoH - logoBottom - 32; 
+      // clamp to 900×(16/9)=1600 max if needed
+      if (newH > 900 * 16/9) newH = 900 * 16/9;
+      document.getElementById('photoFrame').style.height = `${newH}px`;
     }
+    window.addEventListener('load', () => setTimeout(resizeStory,100));
+    window.addEventListener('resize', resizeStory);
+    document.fonts && document.fonts.ready.then(resizeStory);
   </script>
-
 </body>
 </html>
