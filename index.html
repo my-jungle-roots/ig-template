@@ -15,32 +15,37 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 60px;
+      padding: 40px;
       box-sizing: border-box;
       position: relative;
     }
+
     .photo {
       max-width: 100%;
       max-height: 700px;
-      object-fit: cover;
+      object-fit: contain;
       border-radius: 12px;
+      box-shadow: none;
+      background: none;
     }
+
     .caption {
       margin-top: 40px;
       font-size: 42px;
       font-weight: 400;
-      color: #222;
+      color: #ffffff;
       text-align: center;
       line-height: 1.4;
       max-width: 900px;
       word-wrap: break-word;
-      text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
     }
+
     .logo {
       position: absolute;
       bottom: 30px;
       right: 30px;
-      width: 150px;
+      width: 140px;
       opacity: 0.85;
     }
   </style>
@@ -52,8 +57,8 @@
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const bgColor = urlParams.get('bgColor') || '#E9F5E1';
-    const caption = urlParams.get('caption') || 'This is a beautiful plant.';
+    const bgColor = urlParams.get('bgColor') || '#1B3C1F';
+    const caption = urlParams.get('caption') || 'Your plant caption here!';
     const photoUrl = urlParams.get('photoUrl') || 'https://via.placeholder.com/600x600.png?text=Plant';
 
     document.body.style.backgroundColor = bgColor;
@@ -62,3 +67,4 @@
   </script>
 </body>
 </html>
+
