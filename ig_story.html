@@ -120,4 +120,53 @@
     const logoSize = Number(urlParams.get('logoSize') || 160);
     const logoBottom = Number(urlParams.get('logoBottom') || 54);
     const captionColor = urlParams.get('captionColor') || '#fff';
-    const subcapti
+    const subcaptionColor = urlParams.get('subcaptionColor') || 'rgba(255,255,255,0.90)';
+    const dividerColor = urlParams.get('dividerColor') || '#FFD700';
+    const captionFontSize = Number(urlParams.get('captionFontSize') || 82);
+    const captionFont = urlParams.get('captionFont') || 'Dancing+Script';
+
+    // Dynamically load caption font from Google Fonts
+    function loadGoogleFont(fontName) {
+      const fontUrl = `https://fonts.googleapis.com/css2?family=${fontName}:wght@700&display=swap`;
+      document.getElementById('dynamicFont').setAttribute('href', fontUrl);
+    }
+    loadGoogleFont(captionFont);
+
+    // Set BG
+    document.body.style.background = `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
+
+    // Plant photo
+    document.getElementById('plantImage').src = photoUrl;
+
+    // Caption
+    const captionElem = document.getElementById('captionText');
+    captionElem.textContent = caption ? `“${caption}”` : '';
+    captionElem.style.color = captionColor;
+    captionElem.style.fontSize = `${captionFontSize}px`;
+    captionElem.style.fontFamily = `'${captionFont.replace(/\+/g, ' ')}', cursive, sans-serif`;
+
+    // Subcaption
+    const subcapElem = document.getElementById('subcaptionText');
+    subcapElem.style.color = subcaptionColor;
+    if (subcaption.trim() !== '') {
+      subcapElem.style.display = 'block';
+      subcapElem.textContent = subcaption;
+      document.getElementById('goldDivider').style.display = 'block';
+    } else {
+      document.getElementById('goldDivider').style.display = 'none';
+    }
+
+    // Dynamic gold divider color
+    const dividerElem = document.getElementById('goldDivider');
+    dividerElem.style.background = `linear-gradient(90deg, ${dividerColor} 0%, #FFFBEA 100%)`;
+
+    // Dynamic logo size and vertical placement
+    const logo = document.getElementById('logoImg');
+    logo.style.width = `${logoSize}px`;
+    logo.style.bottom = `${logoBottom}px`;
+
+    // (Optional: Could add auto-sizing for photo if you want, just ask!)
+
+  </script>
+</body>
+</html>
