@@ -2,67 +2,118 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Instagram Post</title>
+  <title>My Jungle Roots Post</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Poppins:wght@400&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       width: 1080px;
       height: 1080px;
-      font-family: 'Poppins', sans-serif;
       background: radial-gradient(circle at center, #1B3C1F 40%, #102316 100%);
+      font-family: 'Poppins', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      padding: 60px;
+      justify-content: flex-start;
+      padding: 80px 60px 60px;
       box-sizing: border-box;
       position: relative;
+      overflow: hidden;
     }
 
     .photo {
       max-width: 100%;
-      max-height: 820px;
+      max-height: 760px;
       object-fit: contain;
       border-radius: 16px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+      z-index: 2;
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    .overlay {
+      position: absolute;
+      top: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 700px;
+      opacity: 0.04;
+      z-index: 1;
     }
 
     .caption {
+      margin-top: 40px;
       font-size: 52px;
       font-family: 'Dancing Script', cursive;
-      font-weight: 500;
-      color: #ffffff;
+      color: #fff;
       text-align: center;
       line-height: 1.4;
-      max-width: 950px;
-      word-wrap: break-word;
-      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
-      margin-top: 20px;
+      max-width: 900px;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+      z-index: 3;
+    }
+
+    .quote-line {
+      height: 2px;
+      width: 60px;
+      background-color: rgba(255,255,255,0.4);
+      margin: 20px auto 10px;
+    }
+
+    .subcaption {
+      margin-top: 12px;
+      font-size: 22px;
+      color: rgba(255,255,255,0.75);
+      font-style: italic;
+      text-align: center;
+      z-index: 3;
     }
 
     .logo {
-      width: 180px;
-      margin-top: 30px;
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      width: 160px;
       opacity: 0.95;
-      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+      z-index: 3;
     }
   </style>
 </head>
 <body>
-  <img id="plantImage" class="photo" alt="Plant">
-  <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo">
-  <div class="caption" id="captionText">Loading caption...</div>
+  <!-- SVG Overlay Leaf -->
+  <svg class="overlay" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 1C76 16 94 34 92 60C90 86 66 99 50 99C34 99 10 86 8 60C6 34 24 16 50 1Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
 
+  <!-- Plant Photo -->
+  <img id="plantImage" class="photo" alt="Plant">
+
+  <!-- Caption Block -->
+  <div class="quote-line"></div>
+  <div class="caption" id="captionText">Loading caption…</div>
+  <div class="subcaption" id="subcaptionText" style="display:none;"></div>
+
+  <!-- Logo -->
+  <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo">
+
+  <!-- JS: Dynamic Injection -->
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const bgColor = urlParams.get('bgColor') || '#1B3C1F';
-    const caption = urlParams.get('caption') || 'Look at this beauty!';
+    const caption = urlParams.get('caption') || 'A moment of calm.';
+    const subcaption = urlParams.get('subcaption') || '';
     const photoUrl = urlParams.get('photoUrl') || 'https://via.placeholder.com/600x600.png?text=Plant';
 
     document.body.style.background = `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
     document.getElementById('plantImage').src = photoUrl;
-    document.getElementById('captionText').textContent = caption;
+    document.getElementById('captionText').textContent = `“${caption}”`;
+
+    if (subcaption.trim() !== '') {
+      const subcap = document.getElementById('subcaptionText');
+      subcap.style.display = 'block';
+      subcap.textContent = subcaption;
+    }
   </script>
 </body>
 </html>
