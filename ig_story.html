@@ -3,151 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <title>My Jungle Roots IG Story</title>
-  <!-- Dynamic Google Font link -->
-  <link id="dynamicFont" rel="stylesheet">
   <style>
+    /* Container & background */
     html, body {
-      margin: 0;
-      padding: 0;
-      width: 1080px;
-      height: 1920px;
-      background: radial-gradient(circle at center, #1B3C1F 40%, #102316 100%);
-      font-family: 'Poppins', sans-serif;
-      overflow: hidden;
-      position: relative;
-    }
-    .main-container {
-      width: 100%;
-      height: 100%;
+      margin: 0; padding: 0;
+      width: 1080px; height: 1920px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 120px; /* Can be overridden via topPadding param */
-      box-sizing: border-box;
-    }
-    .photo-story-frame {
-      width: 900px;
-      height: 1300px;
-      background: #222;
-      border-radius: 48px;
-      overflow: hidden;
-      box-shadow: 0 12px 44px rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at center, #1B3C1F 40%, #102316 100%);
+      font-family: Arial, sans-serif;
+      overflow: hidden;
     }
-    .photo {
+    /* Story “frame” */
+    .frame {
+      position: relative;
+      width: 900px;
+      height: 1600px;
+      background: #1B3C1F;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    /* Photo */
+    .frame img.photo {
       width: 100%;
-      height: 100%;
+      height: 1300px;
       object-fit: cover;
       object-position: center;
+      display: block;
     }
-    .caption-block {
-      width: 90%;
+    /* Caption area */
+    .frame .caption {
+      margin: 16px;
+      font-size: 64px;
+      line-height: 1.1;
       text-align: center;
-      margin-top: 30px;
-      margin-bottom: 20px;
+      color: #FFD700;
     }
-    .caption {
-      margin: 0;
-      line-height: 1.15;
-      max-width: 950px;
-      text-shadow: 1px 2px 14px rgba(0,0,0,0.25);
-      transition: font-size 0.2s, font-family 0.2s;
-    }
-    .gold-divider {
-      display: none;
-      width: 100px;
-      height: 4px;
-      border-radius: 2px;
-      margin: 16px auto;
-      background: linear-gradient(90deg, #FFD700 0%, #FFFBEA 100%);
-      box-shadow: 0 1px 6px rgba(190,153,60,0.12);
-      transition: background 0.2s;
-    }
-    .subcaption {
-      margin: 0;
+    .frame .subcaption {
+      margin: 8px;
+      font-size: 32px;
+      text-align: center;
       font-style: italic;
-      transition: color 0.2s;
+      color: rgba(255,255,255,0.9);
     }
-    .logo {
+    /* Logo */
+    .frame img.logo {
       position: absolute;
-      right: 64px;
-      bottom: 54px;
-      width: 160px;
-      opacity: 0.95;
-      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.55));
-      transition: width 0.2s, bottom 0.2s;
-      pointer-events: none;
+      bottom: 32px;
+      right: 32px;
+      width: 150px;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
     }
   </style>
 </head>
 <body>
 
-  <div class="main-container" id="mainContainer">
-    <div class="photo-story-frame">
-      <img id="plantImage" class="photo" alt="Plant">
-    </div>
-    <div class="caption-block">
-      <div class="caption" id="captionText"></div>
-      <div class="gold-divider" id="goldDivider"></div>
-      <div class="subcaption" id="subcaptionText" style="display:none;"></div>
-    </div>
+  <div class="frame">
+    <img id="photo" class="photo" src="" alt="Plant photo">
+    <div id="caption" class="caption">[caption]</div>
+    <div id="subcaption" class="subcaption">[subcaption]</div>
+    <img id="logo" class="logo"
+         src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png"
+         alt="My Jungle Roots Logo">
   </div>
 
-  <img id="logoImg" class="logo" alt="My Jungle Roots Logo">
-
   <script>
-    // Read URL params
-    const params = new URLSearchParams(window.location.search);
-    const bgColor       = params.get('bgColor')       || '#1B3C1F';
-    const caption       = params.get('caption')       || '';
-    const subcaption    = params.get('subcaption')    || '';
-    const photoUrl      = params.get('photoUrl')      || '';
-    const logoSize      = +params.get('logoSize')     || 160;
-    const logoBottom    = +params.get('logoBottom')   || 54;
-    const captionColor  = params.get('captionColor')  || '#FFFFFF';
-    const subcaptionColor = params.get('subcaptionColor') || 'rgba(255,255,255,0.9)';
-    const dividerColor  = params.get('dividerColor')  || '#FFD700';
-    const topPadding    = +params.get('topPadding')   || 120;
-    const captionFontSize = +params.get('captionFontSize') || 82;
-    const captionFont   = params.get('captionFont')   || 'Dancing+Script';
-
-    // Load dynamic Google Font
-    const fontLink = document.getElementById('dynamicFont');
-    fontLink.href = `https://fonts.googleapis.com/css2?family=${captionFont}:wght@700&display=swap`;
-
-    // Apply background
-    document.body.style.background = `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
-    document.getElementById('mainContainer').style.paddingTop = `${topPadding}px`;
+    // Very basic URL → element binding
+    const qs = new URLSearchParams(window.location.search);
 
     // Photo
-    const img = document.getElementById('plantImage');
-    if (photoUrl) img.src = photoUrl;
+    const photoUrl = qs.get('photoUrl');
+    if (photoUrl) document.getElementById('photo').src = photoUrl;
 
     // Caption
-    const capElem = document.getElementById('captionText');
-    capElem.textContent = caption;
-    capElem.style.color = captionColor;
-    capElem.style.fontSize = `${captionFontSize}px`;
-    capElem.style.fontFamily = `'${captionFont.replace(/\+/g,' ')}', cursive, sans-serif`;
+    const cap = qs.get('caption');
+    if (cap) document.getElementById('caption').textContent = cap;
 
-    // Subcaption & Divider
-    const subElem = document.getElementById('subcaptionText');
-    const divElem = document.getElementById('goldDivider');
-    if (subcaption) {
-      subElem.style.display = 'block';
-      subElem.textContent = subcaption;
-      subElem.style.color = subcaptionColor;
-      divElem.style.display = 'block';
-      divElem.style.background = `linear-gradient(90deg, ${dividerColor} 0%, #FFFBEA 100%)`;
-    }
-
-    // Logo
-    const logo = document.getElementById('logoImg');
-    logo.src = 'https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png';
-    logo.style.width = `${logoSize}px`;
-    logo.style.bottom = `${logoBottom}px`;
+    // Subcaption
+    const sub = qs.get('subcaption');
+    if (sub) document.getElementById('subcaption').textContent = sub;
   </script>
 
 </body>
