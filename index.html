@@ -22,14 +22,13 @@
       min-height: 1080px;
       display: flex;
       flex-direction: column;
-      justify-content: center; /* Vertically centered */
+      justify-content: center;
       align-items: center;
       position: relative;
-      padding-top: 64px; /* Default, dynamically set by JS */
+      padding-top: 64px;
       transition: padding-top 0.18s;
     }
     .photo-portrait-frame {
-      width: 864px;
       background: #222;
       border-radius: 32px;
       overflow: hidden;
@@ -39,7 +38,7 @@
       justify-content: center;
       margin: 0 auto;
       flex-shrink: 0;
-      /* Height is set dynamically by JS */
+      /* Height and width are set dynamically */
     }
     .photo {
       width: 100%;
@@ -68,7 +67,7 @@
       text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
     }
     .gold-divider {
-      display: none; /* Shown dynamically with JS */
+      display: none;
       width: 80px;
       height: 3px;
       border-radius: 3px;
@@ -87,8 +86,7 @@
     .logo {
       position: absolute;
       right: 44px;
-      /* bottom is dynamically set with JS for logo size */
-      width: 164px; /* Default, updated with JS */
+      width: 164px;
       opacity: 0.96;
       filter: drop-shadow(0 6px 16px rgba(0,0,0,0.45));
       z-index: 99;
@@ -122,13 +120,12 @@
     const dividerColor = urlParams.get('dividerColor') || '#FFD700';
     const topPadding = Number(urlParams.get('topPadding') || 64);
 
-    // Set BG
+    // New: photo size params (with safe defaults)
+    const photoHeight = Number(urlParams.get('photoHeight') || 0);
+    const photoWidth = Number(urlParams.get('photoWidth') || 864);
+
     document.body.style.background = `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
-
-    // Plant photo
     document.getElementById('plantImage').src = photoUrl;
-
-    // Set main container padding
     document.getElementById('mainContainer').style.paddingTop = `${topPadding}px`;
 
     // Caption
@@ -148,27 +145,38 @@
       document.getElementById('goldDivider').style.display = 'none';
     }
 
-    // Dynamic gold divider color
+    // Divider color
     const dividerElem = document.getElementById('goldDivider');
     dividerElem.style.background = `linear-gradient(90deg, ${dividerColor} 0%, #FFFBEA 100%)`;
 
-    // Dynamic logo size and vertical placement
+    // Logo size/placement
     const logo = document.getElementById('logoImg');
     logo.style.width = `${logoSize}px`;
     logo.style.bottom = `44px`;
 
-    // Dynamically size the photo frame to fill available space
+    // Dynamically size photo frame
     function resizeLayout() {
-      const totalHeight = 1080;
-      const mainContainer = document.getElementById('mainContainer');
-      const captionBlock = document.querySelector('.caption-block');
-      const captionHeight = captionBlock.offsetHeight;
-      const logoHeight = logo.offsetHeight || logoSize;
-      const paddingTop = parseInt(window.getComputedStyle(mainContainer).paddingTop, 10) || 0;
-      const logoSpace = logoHeight + 64;
-      let newPhotoHeight = totalHeight - captionHeight - logoSpace - paddingTop;
-      if (newPhotoHeight > 864 * 5/4) newPhotoHeight = 864 * 5/4; // IG 4:5 limit
-      document.getElementById('photoFrame').style.height = `${newPhotoHeight}px`;
+      const frame = document.getElementById('photoFrame');
+      let w = photoWidth;
+      let h = photoHeight;
+
+      // If user provides photoHeight, use it. Otherwise, auto-fit as before
+      if (h > 0) {
+        frame.style.height = `${h}px`;
+      } else {
+        // Auto-fit based on available space
+        const totalHeight = 1080;
+        const mainContainer = document.getElementById('mainContainer');
+        const captionBlock = document.querySelector('.caption-block');
+        const captionHeight = captionBlock.offsetHeight;
+        const logoHeight = logo.offsetHeight || logoSize;
+        const paddingTop = parseInt(window.getComputedStyle(mainContainer).paddingTop, 10) || 0;
+        const logoSpace = logoHeight + 64;
+        let newPhotoHeight = totalHeight - captionHeight - logoSpace - paddingTop;
+        if (newPhotoHeight > w * 5/4) newPhotoHeight = w * 5/4;
+        frame.style.height = `${newPhotoHeight}px`;
+      }
+      frame.style.width = `${w}px`;
     }
 
     function adjust() {
