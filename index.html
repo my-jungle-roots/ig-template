@@ -4,104 +4,112 @@
   <meta charset="UTF-8">
   <title>My Jungle Roots Post</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Poppins:wght@400&display=swap" rel="stylesheet">
-<style>
-  body {
-    margin: 0;
-    width: 1080px;
-    height: 1080px;
-    background: radial-gradient(circle at center, #1B3C1F 40%, #102316 100%);
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 60px;
-    box-sizing: border-box;
-    position: relative;
-    overflow: hidden;
-  }
+  <style>
+    body {
+      margin: 0;
+      width: 1080px;
+      height: 1080px;
+      background: radial-gradient(circle at center, #1B3C1F 40%, #102316 100%);
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+    }
 
-  .photo-frame {
-    width: 100%;
-    height: 750px;
-    overflow: hidden;
-    border-radius: 24px;
-    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-  }
+    .photo-container {
+      width: 100%;
+      height: 750px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.3);
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-  .caption {
-    margin-top: 20px;
-    font-size: 52px;
-    font-family: 'Dancing Script', cursive;
-    color: #fff;
-    text-align: center;
-    line-height: 1.3;
-    max-width: 950px;
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
-    z-index: 3;
-  }
+    .photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-  .logo {
-    margin-top: 20px;
-    width: 160px;
-    opacity: 0.92;
-    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
-    z-index: 3;
-  }
-  .photo-container {
-  width: 100%;
-  height: 740px;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.3);
-  z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+    .quote-line {
+      height: 2px;
+      width: 60px;
+      background-color: rgba(255,255,255,0.4);
+      margin: 20px auto 10px;
+    }
 
-.photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+    .caption {
+      font-size: 48px;
+      font-family: 'Dancing Script', cursive;
+      color: #fff;
+      text-align: center;
+      line-height: 1.4;
+      max-width: 950px;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+      z-index: 3;
+    }
 
-</style>
+    .subcaption {
+      font-size: 22px;
+      color: rgba(255,255,255,0.75);
+      font-style: italic;
+      text-align: center;
+      margin-top: 12px;
+      z-index: 3;
+    }
 
+    .logo {
+      width: 160px;
+      opacity: 0.92;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+      z-index: 3;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 700px;
+      opacity: 0.04;
+      z-index: 1;
+    }
+  </style>
 </head>
 <body>
-  <!-- SVG Overlay Leaf -->
+
+  <!-- SVG Overlay -->
   <svg class="overlay" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M50 1C76 16 94 34 92 60C90 86 66 99 50 99C34 99 10 86 8 60C6 34 24 16 50 1Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 
-  <!-- Plant Photo -->
+  <!-- Image -->
   <div class="photo-container">
     <img id="plantImage" class="photo" alt="Plant">
   </div>
-  <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo">
-  <div class="quote-line"></div>
-  <div class="caption" id="captionText">Loading caption…</div>
-
-
-
-  <!-- Caption Block -->
-  <div class="quote-line"></div>
-  <div class="caption" id="captionText">Loading caption…</div>
-  <div class="subcaption" id="subcaptionText" style="display:none;"></div>
 
   <!-- Logo -->
   <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo">
 
-  <!-- JS: Dynamic Injection -->
+  <!-- Caption -->
+  <div class="quote-line"></div>
+  <div class="caption" id="captionText">Loading caption…</div>
+  <div class="subcaption" id="subcaptionText" style="display:none;"></div>
+
+  <!-- Dynamic JS -->
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const bgColor = urlParams.get('bgColor') || '#1B3C1F';
-    const caption = urlParams.get('caption') || 'A moment of calm.';
+    const caption = urlParams.get('caption') || 'Look at this beauty!';
     const subcaption = urlParams.get('subcaption') || '';
     const photoUrl = urlParams.get('photoUrl') || 'https://via.placeholder.com/600x600.png?text=Plant';
 
@@ -115,5 +123,6 @@
       subcap.textContent = subcaption;
     }
   </script>
+
 </body>
 </html>
