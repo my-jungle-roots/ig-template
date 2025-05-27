@@ -3,61 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <title>Instagram Post</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       width: 1080px;
       height: 1080px;
-      font-family: 'Helvetica Neue', sans-serif;
-      background: linear-gradient(145deg, {{bgColor}}, #ffffff);
+      font-family: 'Poppins', sans-serif;
+      background-color: #ffffff;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 60px;
       box-sizing: border-box;
+      position: relative;
     }
     .photo {
-      width: 80%;
-      height: auto;
-      max-height: 600px;
+      max-width: 100%;
+      max-height: 700px;
       object-fit: cover;
-      border-radius: 24px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      border-radius: 12px;
     }
     .caption {
       margin-top: 40px;
       font-size: 42px;
-      font-weight: 500;
+      font-weight: 400;
       color: #222;
       text-align: center;
       line-height: 1.4;
       max-width: 900px;
       word-wrap: break-word;
-      text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+      text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
     }
     .logo {
       position: absolute;
-      bottom: 40px;
-      right: 40px;
-      font-size: 20px;
-      opacity: 0.5;
-      font-style: italic;
+      bottom: 30px;
+      right: 30px;
+      width: 150px;
+      opacity: 0.85;
     }
   </style>
 </head>
 <body>
   <img id="plantImage" class="photo" alt="Plant">
-  <div class="caption" id="captionText">Loading caption...</div>
-  <div class="logo">My Jungle Roots</div>
+  <div class="caption" id="captionText">Loading...</div>
+  <img src="https://i.ibb.co/YW1KbmZ/myjungle-logo.png" alt="My Jungle Roots Logo" class="logo">
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const bgColor = urlParams.get('bgColor') || '#DFFFE5';
-    const caption = urlParams.get('caption') || 'A beautiful plant for your day!';
+    const bgColor = urlParams.get('bgColor') || '#E9F5E1';
+    const caption = urlParams.get('caption') || 'This is a beautiful plant.';
     const photoUrl = urlParams.get('photoUrl') || 'https://via.placeholder.com/600x600.png?text=Plant';
 
-    document.body.style.background = `linear-gradient(145deg, ${bgColor}, #ffffff)`;
+    document.body.style.backgroundColor = bgColor;
     document.getElementById('plantImage').src = photoUrl;
     document.getElementById('captionText').textContent = caption;
   </script>
