@@ -1,1 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Jungle Roots Post</title>
+  <link id="dynamicFont" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 1200px;
+      height: 630px;
+      background: radial-gradient(circle at center, #1B3C1F 40%, #102316 100%);
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+      overflow: hidden;
+      position: relative;
+    }
+    .main-container {
+      width: 100%;
+      height: 100vh;
+      min-height: 1080px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      padding-top: 64px;
+      transition: padding-top 0.18s;
+    }
+    .photo-portrait-frame {
+      width: 864px;
+      /* Height is set dynamically with JS */
+      background: #222;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      flex-shrink: 0;
+    }
+    .photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+    .caption-block {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 18px;
+      margin-bottom: 12px;
+    }
+    .caption {
+      font-size: 54px; /* Dynamically updated */
+      font-family: 'Dancing Script', cursive; /* Dynamically updated */
+      text-align: center;
+      margin: 0;
+      line-height: 1.15;
+      max-width: 980px;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
+      transition: font-size 0.2s, font-family 0.2s;
+    }
+    .gold-divider {
+      display: none;
+      width: 80px;
+      height: 3px;
+      border-radius: 3px;
+      margin: 18px auto 6px auto;
+      box-shadow: 0 1px 6px 0 rgba(190, 153, 60, 0.18);
+      background: linear-gradient(90deg, #FFD700 0%, #FFFBEA 100%);
+      transition: background 0.18s;
+    }
+    .subcaption {
+      font-size: 24px;
+      text-align: center;
+      margin-top: 0;
+      font-style: italic;
+    }
+    .logo {
+      position: absolute;
+      right: 44px;
+      width: 164px;
+      opacity: 0.96;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.45));
+      z-index: 99;
+      background: none;
+      pointer-events: none;
+      transition: width 0.15s, bottom 0.15s;
+      bottom: 44px;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <div class="photo-portrait-frame" id="photoFrame">
+      <img id="plantImage" class="photo" alt="Plant">
+    </div>
+    <div class="caption-block">
+      <div class="caption" id="captionText"></div>
+      <div class="gold-divider" id="goldDivider"></div>
+      <div class="subcaption" id="subcaptionText" style="display:none;"></div>
+    </div>
+  </div>
+  <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo" id="logoImg">
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const bgColor = urlParams.get('bgColor') || '#1B3C1F';
+    const caption = urlParams.get('caption') || '';
+    const subcaption = urlParams.get('subcaption') || '';
+    const photoUrl = urlParams.get('photoUrl') || 'https://via.placeholder.com/864x1080.png?text=Plant';
+    const logoSize = Number(urlParams.get('logoSize') || 164);
+    const logoBottom = Number(urlParams.get('logoBottom') || 44);
+    const captionColor = urlParams.get('captionColor') || '#fff';
+    const subcaptionColor = urlParams.get('subcaptionColor') || 'rgba(255,255,255,0.90)';
+    const dividerColor = urlParams.get('dividerColor') || '#FFD700';
+    const topPadding = Number(urlParams.get('topPadding') || 64);
+    const captionFontSize = Number(urlParams.get('captionFontSize') || 54);
+    const captionFont = urlParams.get('captionFont') || 'Dancing+Script';
 
+    // Dynamically load caption font from Google Fonts
+    function loadGoogleFont(fontName) {
+      const fontUrl = `https://fonts.googleapis.com/css2?family=${fontName}:wght@700&display=swap`;
+      document.getElementById('dynamicFont').setAttribute('href', fontUrl);
+    }
+    loadGoogleFont(captionFont);
+
+    // Set BG
+    document.body.style.background = `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
+
+    // Plant photo
+    document.getElementById('plantImage').src = photoUrl;
+
+    // Caption
+    const captionElem = document.getElementById('captionText');
+    captionElem.textContent = caption ? `“${caption}”` : '';
+    captionElem.style.color = captionColor;
+    captionElem.style.fontSize = `${captionFontSize}px`;
+    captionElem.style.fontFamily = `'${captionFont.replace(/\+/g, ' ')}', cursive, sans-serif`;
+
+    // Subcaption
+    const subcapElem = document.getElementById('subcaptionText');
+    subcapElem.style.color = subcaptionColor;
+    if (subcaption.trim() !== '') {
+      subcapElem.style.display = 'block';
+      subcapElem.textContent = subcaption;
+      document.getElementById('goldDivider').style.display = 'block';
+    } else {
+      document.getElementById('goldDivider').style.display = 'none';
+    }
+
+    // Dynamic gold divider color
+    const dividerElem = document.getElementById('goldDivider');
+    dividerElem.style.background = `linear-gradient(90deg, ${dividerColor} 0%, #FFFBEA 100%)`;
+
+    // Dynamic logo size and vertical placement
+    const logo = document.getElementById('logoImg');
+    logo.style.width = `${logoSize}px`;
+    logo.style.bottom = `${logoBottom}px`;
+
+    // Dynamically size the photo frame to fill available space
+    function resizeLayout() {
+      const totalHeight = 1080;
+      const mainContainer = document.querySelector('.main-container');
+      const captionBlock = document.querySelector('.caption-block');
+      const captionHeight = captionBlock.offsetHeight;
+      const logoHeight = logo.offsetHeight || logoSize;
+      const paddingTop = parseInt(window.getComputedStyle(mainContainer).paddingTop, 10) || 0;
+      const logoSpace = logoHeight + logoBottom;
+      let newPhotoHeight = totalHeight - captionHeight - logoSpace - paddingTop;
+      if (newPhotoHeight > 864 * 5/4) newPhotoHeight = 864 * 5/4; // IG 4:5 limit
+      document.getElementById('photoFrame').style.height = `${newPhotoHeight}px`;
+    }
+
+    function adjust() {
+      setTimeout(resizeLayout, 100);
+    }
+    window.onload = adjust;
+    window.onresize = adjust;
+    document.fonts && document.fonts.ready.then(adjust);
+  </script>
+</body>
+</html>
