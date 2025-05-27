@@ -18,16 +18,17 @@
     }
     .main-container {
       width: 100%;
-      height: 100%;
+      height: 100vh;
+      min-height: 1080px;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      justify-content: flex-start;
       position: relative;
     }
     .photo-portrait-frame {
       width: 864px;
-      height: 780px;
+      /* Dynamically sized below */
       background: #222;
       border-radius: 32px;
       overflow: hidden;
@@ -35,7 +36,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 40px;
+      margin-top: 0;
+      margin-bottom: 0;
+      flex-shrink: 0;
     }
     .photo {
       width: 100%;
@@ -49,8 +52,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: 28px;
-      margin-bottom: 18px;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 12px;
+      margin-bottom: 12px;
     }
     .caption {
       font-size: 54px;
@@ -80,21 +85,22 @@
     }
     .logo {
       position: absolute;
-      bottom: 44px;
       right: 44px;
-      width: 164px; /* Default size, updated with JS */
+      /* bottom is dynamically set with JS for logo size */
+      width: 164px; /* Default, updated with JS */
       opacity: 0.96;
       filter: drop-shadow(0 6px 16px rgba(0,0,0,0.45));
       z-index: 99;
       background: none;
       pointer-events: none;
-      transition: width 0.15s;
+      transition: width 0.15s, bottom 0.15s;
     }
   </style>
 </head>
 <body>
   <div class="main-container">
-    <div class="photo-portrait-frame">
+    <div style="flex: 0 0 auto;"></div>
+    <div class="photo-portrait-frame" id="photoFrame">
       <img id="plantImage" class="photo" alt="Plant">
     </div>
     <div class="caption-block">
@@ -102,6 +108,7 @@
       <div class="gold-divider" id="goldDivider"></div>
       <div class="subcaption" id="subcaptionText" style="display:none;"></div>
     </div>
+    <div style="flex: 0 0 auto;"></div>
   </div>
   <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo" id="logoImg">
   <script>
@@ -110,7 +117,21 @@
     const caption = urlParams.get('caption') || '';
     const subcaption = urlParams.get('subcaption') || '';
     const photoUrl = urlParams.get('photoUrl') || 'https://via.placeholder.com/864x1080.png?text=Plant';
-    const logoSize = urlParams.get('logoSize') || 164;
+    const logoSize = Number(urlParams.get('logoSize') || 164);
+
+    // Dynamically size the photo frame to fill remaining space
+    function resizeLayout() {
+      const totalHeight = 1080;
+      const captionBlock = document.querySelector('.caption-block');
+      const captionHeight = captionBlock.offsetHeight;
+      const photoFrame = document.getElementById('photoFrame');
+      // logo size + 64px (buffer)
+      const logoSpace = logoSize + 64;
+      // Calculate remaining height for the photo
+      let newPhotoHeight = totalHeight - captionHeight - logoSpace;
+      if (newPhotoHeight > 864 * 5/4) newPhotoHeight = 864 * 5/4; // limit to IG 4:5
+      photoFrame.style.height = `${newPhotoHeight}px`;
+    }
 
     document.body.style.background = `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
     document.getElementById('plantImage').src = photoUrl;
@@ -123,7 +144,18 @@
       document.getElementById('goldDivider').style.display = 'block';
     }
     // Allow dynamic logo size
-    document.getElementById('logoImg').style.width = `${logoSize}px`;
+    const logo = document.getElementById('logoImg');
+    logo.style.width = `${logoSize}px`;
+    // Calculate logo bottom offset (never clipped)
+    logo.style.bottom = `${44}px`;
+
+    // On page load and on font load/resize, re-size the photo area
+    function adjust() {
+      setTimeout(resizeLayout, 100);
+    }
+    window.onload = adjust;
+    window.onresize = adjust;
+    document.fonts && document.fonts.ready.then(adjust);
   </script>
 </body>
 </html>
