@@ -21,7 +21,7 @@
     }
 
     .photo-portrait-frame {
-      width: 864px;        /* 4:5 ratio, portrait */
+      width: 864px;        /* 4:5 ratio */
       height: 1080px;
       margin-top: 0px;
       background: #222;
@@ -71,26 +71,30 @@
       z-index: 20;
     }
 
-    @media (max-width: 1000px) {
-      .photo-portrait-frame {
-        width: 90vw;
-        height: 112.5vw;
-        max-width: 864px;
-        max-height: 1080px;
-      }
+    /* Ensure nothing overlays or pushes logo up */
+    .content-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      z-index: 2;
     }
+
   </style>
 </head>
 <body>
 
-  <!-- Main Portrait Photo -->
-  <div class="photo-portrait-frame">
-    <img id="plantImage" class="photo" alt="Plant">
-  </div>
+  <div class="content-section">
+    <div class="photo-portrait-frame">
+      <img id="plantImage" class="photo" alt="Plant">
+    </div>
 
-  <!-- Caption(s) -->
-  <div class="caption" id="captionText">Loading caption…</div>
-  <div class="subcaption" id="subcaptionText" style="display:none;"></div>
+    <!-- Caption(s) -->
+    <div class="caption" id="captionText"></div>
+    <div class="subcaption" id="subcaptionText" style="display:none;"></div>
+  </div>
 
   <!-- One Logo, Large, Lower Corner -->
   <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo">
