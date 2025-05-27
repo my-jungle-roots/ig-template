@@ -22,13 +22,14 @@
       min-height: 1080px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: center; /* Vertically centered */
       align-items: center;
       position: relative;
+      padding-top: 64px; /* Extra top padding for breathing room */
     }
     .photo-portrait-frame {
       width: 864px;
-      /* Dynamically sized below */
+      /* Height is set dynamically with JS */
       background: #222;
       border-radius: 32px;
       overflow: hidden;
@@ -36,8 +37,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 0;
-      margin-bottom: 0;
+      margin: 0 auto;
       flex-shrink: 0;
     }
     .photo {
@@ -54,13 +54,12 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      margin-top: 12px;
+      margin-top: 18px;
       margin-bottom: 12px;
     }
     .caption {
       font-size: 54px;
       font-family: 'Dancing Script', cursive;
-      color: #fff;
       text-align: center;
       margin: 0;
       line-height: 1.15;
@@ -71,14 +70,13 @@
       display: none; /* Shown dynamically with JS */
       width: 80px;
       height: 3px;
-      background: linear-gradient(90deg, #FFD700 0%, #FFFBEA 100%);
       border-radius: 3px;
       margin: 18px auto 6px auto;
       box-shadow: 0 1px 6px 0 rgba(190, 153, 60, 0.18);
+      background: linear-gradient(90deg, #FFD700 0%, #FFFBEA 100%);
     }
     .subcaption {
       font-size: 24px;
-      color: rgba(255,255,255,0.90);
       text-align: center;
       margin-top: 0;
       font-style: italic;
@@ -99,7 +97,6 @@
 </head>
 <body>
   <div class="main-container">
-    <div style="flex: 0 0 auto;"></div>
     <div class="photo-portrait-frame" id="photoFrame">
       <img id="plantImage" class="photo" alt="Plant">
     </div>
@@ -108,7 +105,6 @@
       <div class="gold-divider" id="goldDivider"></div>
       <div class="subcaption" id="subcaptionText" style="display:none;"></div>
     </div>
-    <div style="flex: 0 0 auto;"></div>
   </div>
   <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo" id="logoImg">
   <script>
@@ -118,38 +114,55 @@
     const subcaption = urlParams.get('subcaption') || '';
     const photoUrl = urlParams.get('photoUrl') || 'https://via.placeholder.com/864x1080.png?text=Plant';
     const logoSize = Number(urlParams.get('logoSize') || 164);
+    const captionColor = urlParams.get('captionColor') || '#fff';
+    const subcaptionColor = urlParams.get('subcaptionColor') || 'rgba(255,255,255,0.90)';
+    const dividerColor = urlParams.get('dividerColor') || '#FFD700';
 
-    // Dynamically size the photo frame to fill remaining space
-    function resizeLayout() {
-      const totalHeight = 1080;
-      const captionBlock = document.querySelector('.caption-block');
-      const captionHeight = captionBlock.offsetHeight;
-      const photoFrame = document.getElementById('photoFrame');
-      // logo size + 64px (buffer)
-      const logoSpace = logoSize + 64;
-      // Calculate remaining height for the photo
-      let newPhotoHeight = totalHeight - captionHeight - logoSpace;
-      if (newPhotoHeight > 864 * 5/4) newPhotoHeight = 864 * 5/4; // limit to IG 4:5
-      photoFrame.style.height = `${newPhotoHeight}px`;
-    }
-
+    // Set BG
     document.body.style.background = `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
+
+    // Plant photo
     document.getElementById('plantImage').src = photoUrl;
-    document.getElementById('captionText').textContent = caption ? `“${caption}”` : '';
-    // Gold divider only if subcaption exists
+
+    // Caption
+    const captionElem = document.getElementById('captionText');
+    captionElem.textContent = caption ? `“${caption}”` : '';
+    captionElem.style.color = captionColor;
+
+    // Subcaption
+    const subcapElem = document.getElementById('subcaptionText');
+    subcapElem.style.color = subcaptionColor;
     if (subcaption.trim() !== '') {
-      const subcap = document.getElementById('subcaptionText');
-      subcap.style.display = 'block';
-      subcap.textContent = subcaption;
+      subcapElem.style.display = 'block';
+      subcapElem.textContent = subcaption;
       document.getElementById('goldDivider').style.display = 'block';
+    } else {
+      document.getElementById('goldDivider').style.display = 'none';
     }
-    // Allow dynamic logo size
+
+    // Dynamic gold divider color
+    const dividerElem = document.getElementById('goldDivider');
+    dividerElem.style.background = `linear-gradient(90deg, ${dividerColor} 0%, #FFFBEA 100%)`;
+
+    // Dynamic logo size and vertical placement
     const logo = document.getElementById('logoImg');
     logo.style.width = `${logoSize}px`;
-    // Calculate logo bottom offset (never clipped)
-    logo.style.bottom = `${44}px`;
+    logo.style.bottom = `44px`;
 
-    // On page load and on font load/resize, re-size the photo area
+    // Dynamically size the photo frame to fill available space
+    function resizeLayout() {
+      const totalHeight = 1080;
+      const mainContainer = document.querySelector('.main-container');
+      const captionBlock = document.querySelector('.caption-block');
+      const captionHeight = captionBlock.offsetHeight;
+      const logoHeight = logo.offsetHeight || logoSize;
+      const paddingTop = parseInt(window.getComputedStyle(mainContainer).paddingTop, 10) || 0;
+      const logoSpace = logoHeight + 64;
+      let newPhotoHeight = totalHeight - captionHeight - logoSpace - paddingTop;
+      if (newPhotoHeight > 864 * 5/4) newPhotoHeight = 864 * 5/4; // IG 4:5 limit
+      document.getElementById('photoFrame').style.height = `${newPhotoHeight}px`;
+    }
+
     function adjust() {
       setTimeout(resizeLayout, 100);
     }
