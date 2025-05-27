@@ -27,7 +27,7 @@
     }
     .photo-portrait-frame {
       width: 864px;
-      height: 780px;  /* was 1080px before, now leaves space at bottom */
+      height: 780px;
       background: #222;
       border-radius: 32px;
       overflow: hidden;
@@ -35,7 +35,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 60px;
+      margin-top: 40px;
     }
     .photo {
       width: 100%;
@@ -62,23 +62,33 @@
       max-width: 980px;
       text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
     }
+    .gold-divider {
+      display: none; /* Shown dynamically with JS */
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, #FFD700 0%, #FFFBEA 100%);
+      border-radius: 3px;
+      margin: 18px auto 6px auto;
+      box-shadow: 0 1px 6px 0 rgba(190, 153, 60, 0.18);
+    }
     .subcaption {
       font-size: 24px;
       color: rgba(255,255,255,0.90);
       text-align: center;
-      margin-top: 16px;
+      margin-top: 0;
       font-style: italic;
     }
     .logo {
       position: absolute;
       bottom: 44px;
       right: 44px;
-      width: 164px;
+      width: 164px; /* Default size, updated with JS */
       opacity: 0.96;
       filter: drop-shadow(0 6px 16px rgba(0,0,0,0.45));
       z-index: 99;
       background: none;
       pointer-events: none;
+      transition: width 0.15s;
     }
   </style>
 </head>
@@ -89,25 +99,31 @@
     </div>
     <div class="caption-block">
       <div class="caption" id="captionText"></div>
+      <div class="gold-divider" id="goldDivider"></div>
       <div class="subcaption" id="subcaptionText" style="display:none;"></div>
     </div>
   </div>
-  <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo">
+  <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo" id="logoImg">
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const bgColor = urlParams.get('bgColor') || '#1B3C1F';
     const caption = urlParams.get('caption') || '';
     const subcaption = urlParams.get('subcaption') || '';
     const photoUrl = urlParams.get('photoUrl') || 'https://via.placeholder.com/864x1080.png?text=Plant';
+    const logoSize = urlParams.get('logoSize') || 164;
 
     document.body.style.background = `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
     document.getElementById('plantImage').src = photoUrl;
     document.getElementById('captionText').textContent = caption ? `“${caption}”` : '';
+    // Gold divider only if subcaption exists
     if (subcaption.trim() !== '') {
       const subcap = document.getElementById('subcaptionText');
       subcap.style.display = 'block';
       subcap.textContent = subcaption;
+      document.getElementById('goldDivider').style.display = 'block';
     }
+    // Allow dynamic logo size
+    document.getElementById('logoImg').style.width = `${logoSize}px`;
   </script>
 </body>
 </html>
