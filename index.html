@@ -25,11 +25,11 @@
       justify-content: center; /* Vertically centered */
       align-items: center;
       position: relative;
-      padding-top: 64px; /* Extra top padding for breathing room */
+      padding-top: 64px; /* Default, dynamically set by JS */
+      transition: padding-top 0.18s;
     }
     .photo-portrait-frame {
       width: 864px;
-      /* Height is set dynamically with JS */
       background: #222;
       border-radius: 32px;
       overflow: hidden;
@@ -39,6 +39,7 @@
       justify-content: center;
       margin: 0 auto;
       flex-shrink: 0;
+      /* Height is set dynamically by JS */
     }
     .photo {
       width: 100%;
@@ -74,12 +75,14 @@
       margin: 18px auto 6px auto;
       box-shadow: 0 1px 6px 0 rgba(190, 153, 60, 0.18);
       background: linear-gradient(90deg, #FFD700 0%, #FFFBEA 100%);
+      transition: background 0.18s;
     }
     .subcaption {
       font-size: 24px;
       text-align: center;
       margin-top: 0;
       font-style: italic;
+      transition: color 0.18s;
     }
     .logo {
       position: absolute;
@@ -96,7 +99,7 @@
   </style>
 </head>
 <body>
-  <div class="main-container">
+  <div class="main-container" id="mainContainer">
     <div class="photo-portrait-frame" id="photoFrame">
       <img id="plantImage" class="photo" alt="Plant">
     </div>
@@ -117,12 +120,16 @@
     const captionColor = urlParams.get('captionColor') || '#fff';
     const subcaptionColor = urlParams.get('subcaptionColor') || 'rgba(255,255,255,0.90)';
     const dividerColor = urlParams.get('dividerColor') || '#FFD700';
+    const topPadding = Number(urlParams.get('topPadding') || 64);
 
     // Set BG
     document.body.style.background = `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
 
     // Plant photo
     document.getElementById('plantImage').src = photoUrl;
+
+    // Set main container padding
+    document.getElementById('mainContainer').style.paddingTop = `${topPadding}px`;
 
     // Caption
     const captionElem = document.getElementById('captionText');
@@ -137,6 +144,7 @@
       subcapElem.textContent = subcaption;
       document.getElementById('goldDivider').style.display = 'block';
     } else {
+      subcapElem.style.display = 'none';
       document.getElementById('goldDivider').style.display = 'none';
     }
 
@@ -152,7 +160,7 @@
     // Dynamically size the photo frame to fill available space
     function resizeLayout() {
       const totalHeight = 1080;
-      const mainContainer = document.querySelector('.main-container');
+      const mainContainer = document.getElementById('mainContainer');
       const captionBlock = document.querySelector('.caption-block');
       const captionHeight = captionBlock.offsetHeight;
       const logoHeight = logo.offsetHeight || logoSize;
