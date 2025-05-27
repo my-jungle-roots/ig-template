@@ -5,35 +5,30 @@
   <title>My Jungle Roots Post</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       width: 1080px;
       height: 1080px;
       background: radial-gradient(circle at center, #1B3C1F 40%, #102316 100%);
       font-family: 'Poppins', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
       box-sizing: border-box;
-      position: relative;
       overflow: hidden;
+      position: relative;
     }
 
-    .content-section {
+    .main-container {
       width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       position: relative;
-      z-index: 2;
-      margin-top: 32px;
-      margin-bottom: 0;
     }
 
     .photo-portrait-frame {
-      width: 864px;        /* 4:5 ratio */
+      width: 864px;
       height: 1080px;
       background: #222;
       border-radius: 32px;
@@ -42,8 +37,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-left: auto;
-      margin-right: auto;
+      margin-top: 60px;    /* << top margin for breathing room */
     }
 
     .photo {
@@ -54,33 +48,31 @@
       display: block;
     }
 
+    .caption-block {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 32px;
+      margin-bottom: 32px;
+    }
+
     .caption {
       font-size: 54px;
       font-family: 'Dancing Script', cursive;
       color: #fff;
       text-align: center;
-      margin-top: 44px;
-      margin-bottom: 0px;
+      margin: 0;
       line-height: 1.15;
       max-width: 980px;
       text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
-      position: relative;
-    }
-
-    .botanical-underline {
-      display: block;
-      margin: 16px auto 0 auto;
-      width: 80px;
-      height: 18px;
-      opacity: 0.22;
     }
 
     .subcaption {
       font-size: 24px;
       color: rgba(255,255,255,0.90);
       text-align: center;
-      margin-top: 24px;
-      margin-bottom: 0;
+      margin-top: 16px;
       font-style: italic;
     }
 
@@ -91,45 +83,23 @@
       width: 164px;
       opacity: 0.96;
       filter: drop-shadow(0 6px 16px rgba(0,0,0,0.45));
-      z-index: 20;
+      z-index: 99;
       background: none;
       pointer-events: none;
-    }
-
-    @media (max-width: 1000px) {
-      .photo-portrait-frame {
-        width: 90vw;
-        height: 112.5vw;
-        max-width: 864px;
-        max-height: 1080px;
-      }
-      .logo {
-        width: 120px;
-        bottom: 24px;
-        right: 24px;
-      }
     }
   </style>
 </head>
 <body>
-
-  <div class="content-section">
-    <div style="height: 32px;"></div> <!-- top margin for breathing room -->
+  <div class="main-container">
     <div class="photo-portrait-frame">
       <img id="plantImage" class="photo" alt="Plant">
     </div>
-    <div class="caption" id="captionText"></div>
-    <!-- Optional botanical underline SVG -->
-    <svg class="botanical-underline" viewBox="0 0 80 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M3 10 Q20 0 40 10 T77 10" stroke="gold" stroke-width="2" fill="none" />
-    </svg>
-    <div class="subcaption" id="subcaptionText" style="display:none;"></div>
-    <div style="height: 72px;"></div> <!-- extra space before logo -->
+    <div class="caption-block">
+      <div class="caption" id="captionText"></div>
+      <div class="subcaption" id="subcaptionText" style="display:none;"></div>
+    </div>
   </div>
-
-  <!-- Only ONE logo, always bottom-right, never overlaps plant -->
   <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo">
-
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const bgColor = urlParams.get('bgColor') || '#1B3C1F';
@@ -141,16 +111,10 @@
     document.getElementById('plantImage').src = photoUrl;
     document.getElementById('captionText').textContent = caption ? `“${caption}”` : '';
 
-    // Show or hide subcaption if needed
     if (subcaption.trim() !== '') {
       const subcap = document.getElementById('subcaptionText');
       subcap.style.display = 'block';
       subcap.textContent = subcaption;
-    }
-
-    // Optional: Hide botanical underline if no caption
-    if (!caption.trim()) {
-      document.querySelector('.botanical-underline').style.display = 'none';
     }
   </script>
 </body>
