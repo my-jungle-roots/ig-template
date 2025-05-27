@@ -9,7 +9,7 @@
       width: 1080px;
       height: 1080px;
       font-family: 'Helvetica Neue', sans-serif;
-      background-color: #E3F9E5;
+      background-color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -36,7 +36,18 @@
   </style>
 </head>
 <body>
-  <img src="https://via.placeholder.com/600x600.png?text=Your+Plant" class="photo" alt="Plant">
-  <div class="caption">“This is your caption!”</div>
+  <img id="plantImage" class="photo" alt="Plant">
+  <div class="caption" id="captionText">“...”</div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const bgColor = urlParams.get('bgColor') || '#E3F9E5';
+    const caption = urlParams.get('caption') || 'This is your caption!';
+    const photoUrl = urlParams.get('photoUrl') || 'https://via.placeholder.com/600x600.png?text=Plant';
+
+    document.body.style.backgroundColor = bgColor;
+    document.getElementById('plantImage').src = photoUrl;
+    document.getElementById('captionText').textContent = caption;
+  </script>
 </body>
 </html>
