@@ -155,10 +155,33 @@
     logo.style.bottom = `44px`;
 
     // Dynamically size photo frame
-    function resizeLayout() {
-      const frame = document.getElementById('photoFrame');
-      let w = photoWidth;
-      let h = photoHeight;
+  function resizeLayout() {
+    const frame = document.getElementById('photoFrame');
+    let w = photoWidth;
+    let h = photoHeight;
+    const totalHeight = 1080;
+    const mainContainer = document.getElementById('mainContainer');
+    const captionBlock = document.querySelector('.caption-block');
+    const captionHeight = captionBlock.offsetHeight;
+    const logoHeight = logo.offsetHeight || logoSize;
+    const paddingTop = parseInt(window.getComputedStyle(mainContainer).paddingTop, 10) || 0;
+    const logoSpace = logoHeight + 64;
+
+  let availableHeight = totalHeight - captionHeight - logoSpace - paddingTop;
+
+  if (h > 0) {
+    // Only use the specified height if it will fit!
+    if (h > availableHeight) h = availableHeight;
+    frame.style.height = `${h}px`;
+  } else {
+    // Auto-fit based on available space
+    let newPhotoHeight = availableHeight;
+    if (newPhotoHeight > w * 5/4) newPhotoHeight = w * 5/4;
+    frame.style.height = `${newPhotoHeight}px`;
+  }
+  frame.style.width = `${w}px`;
+}
+
 
       // If user provides photoHeight, use it. Otherwise, auto-fit as before
       if (h > 0) {
