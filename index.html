@@ -20,10 +20,21 @@
       overflow: hidden;
     }
 
+    .content-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      z-index: 2;
+      margin-top: 32px;
+      margin-bottom: 0;
+    }
+
     .photo-portrait-frame {
       width: 864px;        /* 4:5 ratio */
       height: 1080px;
-      margin-top: 0px;
       background: #222;
       border-radius: 32px;
       overflow: hidden;
@@ -31,6 +42,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .photo {
@@ -46,18 +59,28 @@
       font-family: 'Dancing Script', cursive;
       color: #fff;
       text-align: center;
-      margin-top: 36px;
+      margin-top: 44px;
       margin-bottom: 0px;
       line-height: 1.15;
       max-width: 980px;
       text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
+      position: relative;
+    }
+
+    .botanical-underline {
+      display: block;
+      margin: 16px auto 0 auto;
+      width: 80px;
+      height: 18px;
+      opacity: 0.22;
     }
 
     .subcaption {
       font-size: 24px;
-      color: rgba(255,255,255,0.82);
+      color: rgba(255,255,255,0.90);
       text-align: center;
-      margin-top: 16px;
+      margin-top: 24px;
+      margin-bottom: 0;
       font-style: italic;
     }
 
@@ -65,41 +88,48 @@
       position: absolute;
       bottom: 44px;
       right: 44px;
-      width: 190px;
-      opacity: 0.94;
+      width: 164px;
+      opacity: 0.96;
       filter: drop-shadow(0 6px 16px rgba(0,0,0,0.45));
       z-index: 20;
+      background: none;
+      pointer-events: none;
     }
 
-    /* Ensure nothing overlays or pushes logo up */
-    .content-section {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      position: relative;
-      z-index: 2;
+    @media (max-width: 1000px) {
+      .photo-portrait-frame {
+        width: 90vw;
+        height: 112.5vw;
+        max-width: 864px;
+        max-height: 1080px;
+      }
+      .logo {
+        width: 120px;
+        bottom: 24px;
+        right: 24px;
+      }
     }
-
   </style>
 </head>
 <body>
 
   <div class="content-section">
+    <div style="height: 32px;"></div> <!-- top margin for breathing room -->
     <div class="photo-portrait-frame">
       <img id="plantImage" class="photo" alt="Plant">
     </div>
-
-    <!-- Caption(s) -->
     <div class="caption" id="captionText"></div>
+    <!-- Optional botanical underline SVG -->
+    <svg class="botanical-underline" viewBox="0 0 80 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 10 Q20 0 40 10 T77 10" stroke="gold" stroke-width="2" fill="none" />
+    </svg>
     <div class="subcaption" id="subcaptionText" style="display:none;"></div>
+    <div style="height: 72px;"></div> <!-- extra space before logo -->
   </div>
 
-  <!-- One Logo, Large, Lower Corner -->
+  <!-- Only ONE logo, always bottom-right, never overlaps plant -->
   <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo">
 
-  <!-- Dynamic JS -->
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const bgColor = urlParams.get('bgColor') || '#1B3C1F';
@@ -111,10 +141,16 @@
     document.getElementById('plantImage').src = photoUrl;
     document.getElementById('captionText').textContent = caption ? `“${caption}”` : '';
 
+    // Show or hide subcaption if needed
     if (subcaption.trim() !== '') {
       const subcap = document.getElementById('subcaptionText');
       subcap.style.display = 'block';
       subcap.textContent = subcaption;
+    }
+
+    // Optional: Hide botanical underline if no caption
+    if (!caption.trim()) {
+      document.querySelector('.botanical-underline').style.display = 'none';
     }
   </script>
 </body>
