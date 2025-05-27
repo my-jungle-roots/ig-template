@@ -22,13 +22,14 @@
       min-height: 1080px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: center; /* Vertically centered */
       align-items: center;
       position: relative;
-      padding-top: 64px;
-      transition: padding-top 0.18s;
+      padding-top: 64px; /* Extra top padding for breathing room */
     }
     .photo-portrait-frame {
+      width: 864px;
+      /* Height is set dynamically with JS */
       background: #222;
       border-radius: 32px;
       overflow: hidden;
@@ -38,9 +39,6 @@
       justify-content: center;
       margin: 0 auto;
       flex-shrink: 0;
-      /* Height and width set dynamically */
-      min-width: 300px; min-height: 300px;
-      max-width: 1000px; max-height: 1080px;
     }
     .photo {
       width: 100%;
@@ -69,26 +67,25 @@
       text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
     }
     .gold-divider {
-      display: none;
+      display: none; /* Shown dynamically with JS */
       width: 80px;
       height: 3px;
       border-radius: 3px;
       margin: 18px auto 6px auto;
       box-shadow: 0 1px 6px 0 rgba(190, 153, 60, 0.18);
       background: linear-gradient(90deg, #FFD700 0%, #FFFBEA 100%);
-      transition: background 0.18s;
     }
     .subcaption {
       font-size: 24px;
       text-align: center;
       margin-top: 0;
       font-style: italic;
-      transition: color 0.18s;
     }
     .logo {
       position: absolute;
       right: 44px;
-      width: 164px;
+      /* bottom is dynamically set with JS for logo size */
+      width: 164px; /* Default, updated with JS */
       opacity: 0.96;
       filter: drop-shadow(0 6px 16px rgba(0,0,0,0.45));
       z-index: 99;
@@ -99,7 +96,7 @@
   </style>
 </head>
 <body>
-  <div class="main-container" id="mainContainer">
+  <div class="main-container">
     <div class="photo-portrait-frame" id="photoFrame">
       <img id="plantImage" class="photo" alt="Plant">
     </div>
@@ -120,15 +117,12 @@
     const captionColor = urlParams.get('captionColor') || '#fff';
     const subcaptionColor = urlParams.get('subcaptionColor') || 'rgba(255,255,255,0.90)';
     const dividerColor = urlParams.get('dividerColor') || '#FFD700';
-    const topPadding = Number(urlParams.get('topPadding') || 64);
 
-    // New: photo size params (with safe defaults)
-    const photoHeight = Number(urlParams.get('photoHeight') || 0);
-    const photoWidth = Number(urlParams.get('photoWidth') || 864);
-
+    // Set BG
     document.body.style.background = `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
+
+    // Plant photo
     document.getElementById('plantImage').src = photoUrl;
-    document.getElementById('mainContainer').style.paddingTop = `${topPadding}px`;
 
     // Caption
     const captionElem = document.getElementById('captionText');
@@ -143,56 +137,38 @@
       subcapElem.textContent = subcaption;
       document.getElementById('goldDivider').style.display = 'block';
     } else {
-      subcapElem.style.display = 'none';
       document.getElementById('goldDivider').style.display = 'none';
     }
 
-    // Divider color
+    // Dynamic gold divider color
     const dividerElem = document.getElementById('goldDivider');
     dividerElem.style.background = `linear-gradient(90deg, ${dividerColor} 0%, #FFFBEA 100%)`;
 
-    // Logo size/placement
+    // Dynamic logo size and vertical placement
     const logo = document.getElementById('logoImg');
     logo.style.width = `${logoSize}px`;
     logo.style.bottom = `44px`;
 
-    // Dynamically size photo frame, only after images and fonts loaded!
+    // Dynamically size the photo frame to fill available space
     function resizeLayout() {
-      const frame = document.getElementById('photoFrame');
-      let w = photoWidth;
-      let h = photoHeight;
       const totalHeight = 1080;
-      const mainContainer = document.getElementById('mainContainer');
+      const mainContainer = document.querySelector('.main-container');
       const captionBlock = document.querySelector('.caption-block');
       const captionHeight = captionBlock.offsetHeight;
       const logoHeight = logo.offsetHeight || logoSize;
       const paddingTop = parseInt(window.getComputedStyle(mainContainer).paddingTop, 10) || 0;
       const logoSpace = logoHeight + 64;
-
-      let availableHeight = totalHeight - captionHeight - logoSpace - paddingTop;
-
-      if (h > 0) {
-        // Only use the specified height if it will fit!
-        if (h > availableHeight) h = availableHeight;
-        frame.style.height = `${h}px`;
-      } else {
-        // Auto-fit based on available space
-        let newPhotoHeight = availableHeight;
-        if (newPhotoHeight > w * 5/4) newPhotoHeight = w * 5/4;
-        frame.style.height = `${newPhotoHeight}px`;
-      }
-      frame.style.width = `${w}px`;
+      let newPhotoHeight = totalHeight - captionHeight - logoSpace - paddingTop;
+      if (newPhotoHeight > 864 * 5/4) newPhotoHeight = 864 * 5/4; // IG 4:5 limit
+      document.getElementById('photoFrame').style.height = `${newPhotoHeight}px`;
     }
 
     function adjust() {
       setTimeout(resizeLayout, 100);
     }
-    // Make sure to wait for image, fonts, and window load:
     window.onload = adjust;
     window.onresize = adjust;
-    document.getElementById('plantImage').onload = adjust;
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(adjust);
-
+    document.fonts && document.fonts.ready.then(adjust);
   </script>
 </body>
 </html>
