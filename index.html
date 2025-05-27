@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>My Jungle Roots Post</title>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <link id="dynamicFont" rel="stylesheet">
   <style>
     html, body {
       margin: 0;
@@ -22,10 +22,11 @@
       min-height: 1080px;
       display: flex;
       flex-direction: column;
-      justify-content: center; /* Vertically centered */
+      justify-content: center;
       align-items: center;
       position: relative;
-      padding-top: 64px; /* Extra top padding for breathing room */
+      padding-top: 64px;
+      transition: padding-top 0.18s;
     }
     .photo-portrait-frame {
       width: 864px;
@@ -58,22 +59,24 @@
       margin-bottom: 12px;
     }
     .caption {
-      font-size: 54px;
-      font-family: 'Dancing Script', cursive;
+      font-size: 54px; /* Dynamically updated */
+      font-family: 'Dancing Script', cursive; /* Dynamically updated */
       text-align: center;
       margin: 0;
       line-height: 1.15;
       max-width: 980px;
       text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
+      transition: font-size 0.2s, font-family 0.2s;
     }
     .gold-divider {
-      display: none; /* Shown dynamically with JS */
+      display: none;
       width: 80px;
       height: 3px;
       border-radius: 3px;
       margin: 18px auto 6px auto;
       box-shadow: 0 1px 6px 0 rgba(190, 153, 60, 0.18);
       background: linear-gradient(90deg, #FFD700 0%, #FFFBEA 100%);
+      transition: background 0.18s;
     }
     .subcaption {
       font-size: 24px;
@@ -84,14 +87,14 @@
     .logo {
       position: absolute;
       right: 44px;
-      /* bottom is dynamically set with JS for logo size */
-      width: 164px; /* Default, updated with JS */
+      width: 164px;
       opacity: 0.96;
       filter: drop-shadow(0 6px 16px rgba(0,0,0,0.45));
       z-index: 99;
       background: none;
       pointer-events: none;
       transition: width 0.15s, bottom 0.15s;
+      bottom: 44px;
     }
   </style>
 </head>
@@ -114,9 +117,20 @@
     const subcaption = urlParams.get('subcaption') || '';
     const photoUrl = urlParams.get('photoUrl') || 'https://via.placeholder.com/864x1080.png?text=Plant';
     const logoSize = Number(urlParams.get('logoSize') || 164);
+    const logoBottom = Number(urlParams.get('logoBottom') || 44);
     const captionColor = urlParams.get('captionColor') || '#fff';
     const subcaptionColor = urlParams.get('subcaptionColor') || 'rgba(255,255,255,0.90)';
     const dividerColor = urlParams.get('dividerColor') || '#FFD700';
+    const topPadding = Number(urlParams.get('topPadding') || 64);
+    const captionFontSize = Number(urlParams.get('captionFontSize') || 54);
+    const captionFont = urlParams.get('captionFont') || 'Dancing+Script';
+
+    // Dynamically load caption font from Google Fonts
+    function loadGoogleFont(fontName) {
+      const fontUrl = `https://fonts.googleapis.com/css2?family=${fontName}:wght@700&display=swap`;
+      document.getElementById('dynamicFont').setAttribute('href', fontUrl);
+    }
+    loadGoogleFont(captionFont);
 
     // Set BG
     document.body.style.background = `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
@@ -128,6 +142,8 @@
     const captionElem = document.getElementById('captionText');
     captionElem.textContent = caption ? `“${caption}”` : '';
     captionElem.style.color = captionColor;
+    captionElem.style.fontSize = `${captionFontSize}px`;
+    captionElem.style.fontFamily = `'${captionFont.replace(/\+/g, ' ')}', cursive, sans-serif`;
 
     // Subcaption
     const subcapElem = document.getElementById('subcaptionText');
@@ -147,7 +163,7 @@
     // Dynamic logo size and vertical placement
     const logo = document.getElementById('logoImg');
     logo.style.width = `${logoSize}px`;
-    logo.style.bottom = `44px`;
+    logo.style.bottom = `${logoBottom}px`;
 
     // Dynamically size the photo frame to fill available space
     function resizeLayout() {
@@ -157,7 +173,7 @@
       const captionHeight = captionBlock.offsetHeight;
       const logoHeight = logo.offsetHeight || logoSize;
       const paddingTop = parseInt(window.getComputedStyle(mainContainer).paddingTop, 10) || 0;
-      const logoSpace = logoHeight + 64;
+      const logoSpace = logoHeight + logoBottom;
       let newPhotoHeight = totalHeight - captionHeight - logoSpace - paddingTop;
       if (newPhotoHeight > 864 * 5/4) newPhotoHeight = 864 * 5/4; // IG 4:5 limit
       document.getElementById('photoFrame').style.height = `${newPhotoHeight}px`;
