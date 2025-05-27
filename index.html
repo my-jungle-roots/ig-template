@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>My Jungle Roots Post</title>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Poppins:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
@@ -14,108 +14,98 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      padding: 60px;
+      justify-content: flex-start;
       box-sizing: border-box;
       position: relative;
       overflow: hidden;
     }
 
-    .photo-container {
-      width: 100%;
-      height: 750px;
-      border-radius: 24px;
+    .photo-portrait-frame {
+      width: 864px;        /* 4:5 ratio, portrait */
+      height: 1080px;
+      margin-top: 0px;
+      background: #222;
+      border-radius: 32px;
       overflow: hidden;
-      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.3);
-      z-index: 2;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
 
     .photo {
       width: 100%;
       height: 100%;
       object-fit: cover;
-    }
-
-    .quote-line {
-      height: 2px;
-      width: 60px;
-      background-color: rgba(255,255,255,0.4);
-      margin: 20px auto 10px;
+      object-position: center;
+      display: block;
     }
 
     .caption {
-      font-size: 48px;
+      font-size: 54px;
       font-family: 'Dancing Script', cursive;
       color: #fff;
       text-align: center;
-      line-height: 1.4;
-      max-width: 950px;
-      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
-      z-index: 3;
+      margin-top: 36px;
+      margin-bottom: 0px;
+      line-height: 1.15;
+      max-width: 980px;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
     }
 
     .subcaption {
-      font-size: 22px;
-      color: rgba(255,255,255,0.75);
-      font-style: italic;
+      font-size: 24px;
+      color: rgba(255,255,255,0.82);
       text-align: center;
-      margin-top: 12px;
-      z-index: 3;
+      margin-top: 16px;
+      font-style: italic;
     }
 
     .logo {
-      width: 160px;
-      opacity: 0.92;
-      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
-      z-index: 3;
+      position: absolute;
+      bottom: 44px;
+      right: 44px;
+      width: 190px;
+      opacity: 0.94;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.45));
+      z-index: 20;
     }
 
-    .overlay {
-      position: absolute;
-      top: 120px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 700px;
-      height: 700px;
-      opacity: 0.04;
-      z-index: 1;
+    @media (max-width: 1000px) {
+      .photo-portrait-frame {
+        width: 90vw;
+        height: 112.5vw;
+        max-width: 864px;
+        max-height: 1080px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- SVG Overlay -->
-  <svg class="overlay" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M50 1C76 16 94 34 92 60C90 86 66 99 50 99C34 99 10 86 8 60C6 34 24 16 50 1Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-
-  <!-- Image -->
-  <div class="photo-container">
+  <!-- Main Portrait Photo -->
+  <div class="photo-portrait-frame">
     <img id="plantImage" class="photo" alt="Plant">
   </div>
 
-  <!-- Logo -->
-  <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo">
-
-  <!-- Caption -->
-  <div class="quote-line"></div>
+  <!-- Caption(s) -->
   <div class="caption" id="captionText">Loading caption…</div>
   <div class="subcaption" id="subcaptionText" style="display:none;"></div>
+
+  <!-- One Logo, Large, Lower Corner -->
+  <img src="https://res.cloudinary.com/dqapl9uba/image/upload/v1748305756/My_Jungle_Roots_Logo_ssis8d.png" alt="My Jungle Roots Logo" class="logo">
 
   <!-- Dynamic JS -->
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const bgColor = urlParams.get('bgColor') || '#1B3C1F';
-    const caption = urlParams.get('caption') || 'Look at this beauty!';
+    const caption = urlParams.get('caption') || '';
     const subcaption = urlParams.get('subcaption') || '';
-    const photoUrl = urlParams.get('photoUrl') || 'https://via.placeholder.com/600x600.png?text=Plant';
+    const photoUrl = urlParams.get('photoUrl') || 'https://via.placeholder.com/864x1080.png?text=Plant';
 
     document.body.style.background = `radial-gradient(circle at center, ${bgColor} 40%, #102316 100%)`;
     document.getElementById('plantImage').src = photoUrl;
-    document.getElementById('captionText').textContent = `“${caption}”`;
+    document.getElementById('captionText').textContent = caption ? `“${caption}”` : '';
 
     if (subcaption.trim() !== '') {
       const subcap = document.getElementById('subcaptionText');
@@ -123,6 +113,5 @@
       subcap.textContent = subcaption;
     }
   </script>
-
 </body>
 </html>
