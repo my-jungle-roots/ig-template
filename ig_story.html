@@ -4,36 +4,32 @@
   <meta charset="UTF-8">
   <title>My Jungle Roots IG Story</title>
   <style>
-    /* Container & background */
     html, body {
       margin: 0; padding: 0;
       width: 1080px; height: 1920px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: flex; justify-content: center; align-items: center;
       background: radial-gradient(circle at center, #1B3C1F 40%, #102316 100%);
       font-family: Arial, sans-serif;
       overflow: hidden;
     }
-    /* Story “frame” */
     .frame {
       position: relative;
       width: 900px;
+      /* total frame height accommodates photo + captions + logo */
       height: 1600px;
       background: #1B3C1F;
       border-radius: 32px;
       overflow: hidden;
       box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     }
-    /* Photo */
     .frame img.photo {
       width: 100%;
+      /* default, overridden by JS if photoHeight param is set */
       height: 1300px;
       object-fit: cover;
       object-position: center;
       display: block;
     }
-    /* Caption area */
     .frame .caption {
       margin: 16px;
       font-size: 64px;
@@ -48,7 +44,6 @@
       font-style: italic;
       color: rgba(255,255,255,0.9);
     }
-    /* Logo */
     .frame img.logo {
       position: absolute;
       bottom: 32px;
@@ -70,20 +65,30 @@
   </div>
 
   <script>
-    // Very basic URL → element binding
     const qs = new URLSearchParams(window.location.search);
 
-    // Photo
-    const photoUrl = qs.get('photoUrl');
-    if (photoUrl) document.getElementById('photo').src = photoUrl;
+    // Photo URL + optional height
+    const photoUrl    = qs.get('photoUrl')    || '';
+    const photoHeight = parseInt(qs.get('photoHeight'), 10) || 1300;
+    if (photoUrl) {
+      const img = document.getElementById('photo');
+      img.src = photoUrl;
+      img.style.height = photoHeight + 'px';
+    }
 
     // Caption
-    const cap = qs.get('caption');
-    if (cap) document.getElementById('caption').textContent = cap;
+    const caption = qs.get('caption') || '';
+    if (caption) {
+      const cap = document.getElementById('caption');
+      cap.textContent = caption;
+    }
 
     // Subcaption
-    const sub = qs.get('subcaption');
-    if (sub) document.getElementById('subcaption').textContent = sub;
+    const sub = qs.get('subcaption') || '';
+    if (sub) {
+      const sc = document.getElementById('subcaption');
+      sc.textContent = sub;
+    }
   </script>
 
 </body>
